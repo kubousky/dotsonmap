@@ -3,7 +3,11 @@ version: '3.8'
 services:
   web:
     build: .
-    command: python manage.py runserver 0.0.0.0:8000
+    container_name: django
+    command: > 
+      sh -c "python manage.py wait_for_db && 
+             python manage.py migrate &&
+             python manage.py runserver 0.0.0.0:8000"
     volumes:
       - .:/usr/src/app/
     ports:
@@ -14,12 +18,13 @@ services:
       - db
   db:
     image: postgres:13.0-alpine
-    volumes:
-      - postgres_data:/var/lib/postgresql/dotsonmap/data/
+    container_name: postgres
     environment:
       - POSTGRES_USER=hello_django
       - POSTGRES_PASSWORD=hello_django
       - POSTGRES_DB=hello_django_dev
+    volumes:
+      - pgdata:/var/lib/postgresql/data/
 
 volumes:
-  postgres_data:
+  pgdata:
