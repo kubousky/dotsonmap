@@ -10,21 +10,21 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ('email', 'password', 'name')
         extra_kwargs = {'password': {'write_only': True, 'min_length': 5}}
 
-
     def create(self, validated_data):
         """Create a new user with encrypted password"""
         return get_user_model().objects.create_user(**validated_data)
-'''
-    def update(self, instance, validated_data):
-        password = validated_data.pop('password', None)
-        user = super().update(instance, validated_data)
+
+    def update(self, instance, validated_data): # a user instance
+        """Update a user, setting the password correctly and return it (the user)"""
+        password = validated_data.pop('password', None) # remove pw
+        user = super().update(instance, validated_data) # super() is a serializers.ModelSerializer
 
         if password:
             user.set_password(password)
             user.save()
 
         return user
-'''
+
 
 class AuthTokenSerializer(serializers.Serializer):
     """Serializer for the user authentication object"""
