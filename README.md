@@ -4,7 +4,7 @@ docker-compose up -d --build
 # remove
 docker-compose down
 
-# build
+# up and run
 docker-compose up
 
 # ran command
