@@ -18,3 +18,5 @@ docker exec -it <container_name> sh
 # command insider postgres container ('t' comes from tar)
 pg_dump -u postgres -W -F t postgres > backup.tar
 
+# test
+docker-compose run --rm  web python manage.py test
