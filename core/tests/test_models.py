@@ -49,3 +49,16 @@ class ModelTests(TestCase):
         )
 
         self.assertEqual(str(tag), tag.name)
+
+    def test_dot_str(self): # !!! lo vamos a cambiar por un imagen de su Tag, cada 'dot' ser un circulo con rio o montaña etc
+        """test the recipe string representation"""
+        dot = models.Dot.objects.create(
+            user=sample_user(),
+            name='Bromo',
+            description='Es un Volcan en Indonesia',
+            lon='13.9923',
+            lat='34.7823',
+            rating=4.5,
+        )
+
+        self.assertEqual(str(dot), dot.name)

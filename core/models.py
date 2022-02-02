@@ -41,7 +41,25 @@ class Tag(models.Model):
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
-    )
+    ) # Do not delet Dots if the user is deleted
 
     def __str__(self):
+        return self.name
+
+class Dot(models.Model):
+    """Dot object"""
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE       
+    ) # Do not delet Dots if the user is deleted
+    name = models.CharField(max_length=255)
+    description = models.TextField(max_length=350)
+    lon = models.CharField(max_length=20)
+    lat = models.CharField(max_length=20)
+    rating = models.FloatField()
+    link = models.CharField(max_length=255, blank=True)
+    # !!! importante cambiar: max 1 Tag por Dot
+    tags = models.ManyToManyField('Tag')
+
+    def __str__(self): # !!! lo vamos a cambiar por un imagen de su Tag, cada 'dot' ser un circulo con rio o montaña etc # puede ser?
         return self.name
