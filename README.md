@@ -22,7 +22,8 @@ pg_dump -u postgres -W -F t postgres > backup.tar
 docker-compose run --rm  web python manage.py test
 
 ### TO-DO List
-1) \dotsonmap\core\models.py class Dot -> Tag ManyToOne?
-2) Auto login when updated
-3) show user name when logged-in
-4) class Tag and Dot - Do not delet Dots if the user is deleted
+1) Auto login when updated
+2) show user name when logged-in
+3) \dotsonmap\core\models.py class Dot -> Tag ManyToOne?
+4) Tag required for Dot
+5) class Tag and Dot - Do not delet Published Dots if the user is deleted

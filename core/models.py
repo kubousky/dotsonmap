@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, \
                                         PermissionsMixin
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.conf import settings
 
 class UserManager(BaseUserManager):
@@ -56,9 +57,9 @@ class Dot(models.Model):
     description = models.TextField(max_length=350, blank=True)
     lon = models.CharField(max_length=20)
     lat = models.CharField(max_length=20)
-    rating = models.FloatField(default=0.0)
+    rating = models.FloatField(validators=[MinValueValidator(0.0), MaxValueValidator(5.0)],)
     link = models.CharField(max_length=255, blank=True)
-    # !!! importante cambiar: max 1 Tag por Dot
+    # !!! importante cambiar: max 1 Tag por Dot and do it required
     tags = models.ManyToManyField('Tag')
 
     def __str__(self): # !!! lo vamos a cambiar por un imagen de su Tag, cada 'dot' ser un circulo con rio o montaña etc # puede ser?

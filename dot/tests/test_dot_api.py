@@ -100,4 +100,36 @@ class PrivateDotApiTests(TestCase):
         serializer = DotDetailSerializer(dot)
         self.assertEqual(res.data, serializer.data)
 
+    def test_create_basic_dot(self):
+        """Test creating dot"""
+        payload = {
+            'name': 'Peña Cortada',
+            'lat': '18.35678',
+            'lon': '67.76333'
+        }
+        res = self.client.post(DOT_URL, payload)
+
+        self.assertEqual(res.status_code, status.HTTP_201_CREATED)
+        dot = Dot.objects.get(id=res.data['id'])
+        for key in payload.keys():
+            self.assertEqual(payload[key], getattr(dot, key))
+
+    def test_create_dot_with_tags(self):
+        """Test creating a dot with tags"""
+        tag1 = sample_tag(user=self.user, name='Waterfall')
+        tag2 = sample_tag(user=self.user, name='Mountain')
+        payload = {
+            'name': 'Peña Cortada',
+            'lat': '18.35678',
+            'lon': '67.76333',
+            'tags': [tag1.id, tag2.id]
+        }
+        res = self.client.post(DOT_URL, payload)
+
+        self.assertEqual(res.status_code, status.HTTP_201_CREATED)
+        dot = Dot.objects.get(id=res.data['id'])
+        tags = dot.tags.all()
+        self.assertEqual(tags.count(),2)
+        self.assertIn(tag1, tags)
+        self.assertIn(tag2, tags)
 

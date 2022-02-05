@@ -39,5 +39,10 @@ class DotViewSet(viewsets.ModelViewSet):
 
         return self.serializer_class
 
+    def perform_create(self, serializer):
+        """Create a new dot"""
+        serializer.save(user=self.request.user)
+
+
 
 
