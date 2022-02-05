@@ -53,10 +53,10 @@ class Dot(models.Model):
         on_delete=models.CASCADE       
     ) # Do not delet Dots if the user is deleted
     name = models.CharField(max_length=255)
-    description = models.TextField(max_length=350)
+    description = models.TextField(max_length=350, blank=True)
     lon = models.CharField(max_length=20)
     lat = models.CharField(max_length=20)
-    rating = models.FloatField()
+    rating = models.FloatField(default=0.0)
     link = models.CharField(max_length=255, blank=True)
     # !!! importante cambiar: max 1 Tag por Dot
     tags = models.ManyToManyField('Tag')
