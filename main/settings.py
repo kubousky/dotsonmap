@@ -122,22 +122,20 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_URL = '/img/'
+MEDIA_URL = '/media/'
 
+# STATICFILES_DIR = [
+#     BASE_DIR /  'static'
+#     ]
 
-STATICFILES_DIR = [
-    BASE_DIR /  'static'
-    ]
-
-MEDIA_ROOT = 'static/img'
+MEDIA_ROOT = '/vol/web/media'
+STATIC_ROOT = '/vol/web/static'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-
-#
 AUTH_USER_MODEL = 'core.User'
 
 CORS_ALLOWED_ORIGINS = [

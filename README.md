@@ -27,3 +27,4 @@ docker-compose run --rm  web python manage.py test
 3) \dotsonmap\core\models.py class Dot -> Tag ManyToOne?
 4) Tag required for Dot
 5) class Tag and Dot - Do not delet Published Dots if the user is deleted
+6) if public: user create Tag only or give an option to request new tag creation 

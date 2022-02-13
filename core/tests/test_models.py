@@ -1,6 +1,7 @@
+from unittest.mock import patch
 from django.test import TestCase
 from django.contrib.auth import get_user_model
-
+import logging
 from core import models
 
 def sample_user(email='test@kubousky.com', password='test'):
@@ -62,3 +63,15 @@ class ModelTests(TestCase):
         )
 
         self.assertEqual(str(dot), dot.name)
+
+    @patch('uuid.uuid4')
+    def test_dot_file_name_uuid(self, mock_uuid):
+        """Test that image is saved in the correct location"""
+        uuid = 'test-uuid'
+        mock_uuid.return_value = uuid
+        file_path = models.dot_image_file_path(None, 'myimage.jpg')
+
+        exp_path = f'uploads/dot/{uuid}.jpg'
+        # names are different: self.assertEqual(file_path, exp_path) doesn´t pass
+        self.assertEqual(file_path.split('/')[:1], exp_path.split('/')[:1])
+

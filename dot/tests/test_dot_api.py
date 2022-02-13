@@ -28,7 +28,8 @@ def sample_dot(user, **params):
     defaults = {
         'name': 'Thousand Waterfalls',
         'lon': '12.98832',
-        'lat': '45.87321'
+        'lat': '45.87321',
+        'rating': '4.5'
     }
     defaults.update(params)
 
@@ -105,7 +106,8 @@ class PrivateDotApiTests(TestCase):
         payload = {
             'name': 'Peña Cortada',
             'lat': '18.35678',
-            'lon': '67.76333'
+            'lon': '67.76333',
+            'rating': 5.0
         }
         res = self.client.post(DOT_URL, payload)
 
@@ -122,6 +124,7 @@ class PrivateDotApiTests(TestCase):
             'name': 'Peña Cortada',
             'lat': '18.35678',
             'lon': '67.76333',
+            'rating': '5.0',
             'tags': [tag1.id, tag2.id]
         }
         res = self.client.post(DOT_URL, payload)
@@ -133,3 +136,4 @@ class PrivateDotApiTests(TestCase):
         self.assertIn(tag1, tags)
         self.assertIn(tag2, tags)
 
+    
