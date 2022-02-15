@@ -28,3 +28,11 @@ class DotSerializer(serializers.ModelSerializer):
 class DotDetailSerializer(DotSerializer):
     """Serialize a dot detail"""
     tags = TagSerializer(many=True, read_only=True) 
+
+class DotImageSerializer(serializers.ModelSerializer):
+    """Serializer for uploading images to dots"""
+
+    class Meta:
+        model = Dot
+        fields = ('id', 'image')
+        read_only_fields = ('id',)

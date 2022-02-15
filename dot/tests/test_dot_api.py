@@ -1,3 +1,8 @@
+import tempfile
+import os
+
+from PIL import Image
+
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.urls import reverse
@@ -12,6 +17,10 @@ from dot.serializers import DotSerializer, DotDetailSerializer
 
 DOT_URL = reverse('dot:dot-list')
 
+
+def image_upload_url(dot_id):
+    """Return URL for dot image upload"""
+    return reverse('dot:dot-upload-image', args=[dot_id])
 
 def detail_url(dot_id):
     """Return dot detail URL"""
@@ -134,6 +143,39 @@ class PrivateDotApiTests(TestCase):
         tags = dot.tags.all()
         self.assertEqual(tags.count(),2)
         self.assertIn(tag1, tags)
-        self.assertIn(tag2, tags)
+        self.assertIn(tag2, tags) 
 
+# class DotImageUploadTests(TestCase):
     
+#     def setUP(self):
+#         self.client = APIClient()
+#         self.user = get_user_model().objects.create_user(
+#             'user@kubousky.com',
+#             'testpass'
+#         )
+#         self.client.force_authenticate(self.user)
+#         self.dot = sample_dot(user=self.user) # 'DotImageUploadTests' object has no attribute 'dot'
+
+#     def tearDown(self):
+#         self.dot.image.delete()
+
+#     def test_upload_image_to_dot(self):
+#         """Test uploading an image to dot"""
+#         url = image_upload_url(self.dot.id)
+    #     with tempfile.NamedTemporaryFile(suffix='.jpg') as ntf:
+    #         img = Image.new('RGB', (10, 10))
+    #         img.save(ntf, format='JPEG')
+    #         ntf.seek(0)
+    #         res = self.client.post(url, {'image': ntf}, format='multipart')
+        
+    #     self.dot.refresh_from_db()
+    #     self.assertEqual(res.status_code, status.HTTP_200_OK)
+    #     self.assertIn('image', res.data)
+    #     self.assertTrue(os.path.exist(self.dot.image.path))
+
+    # def test_upload_image_bad_request(self):
+    #     """Test uploading an invalid image"""
+    #     url = image_upload_url(self.dot.id)
+    #     res = self.client.post(url, {'image': 'notimage'}, format='multipart')
+
+    #     self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)

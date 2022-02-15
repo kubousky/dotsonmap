@@ -75,3 +75,5 @@ class ModelTests(TestCase):
         # names are different: self.assertEqual(file_path, exp_path) doesn´t pass
         self.assertEqual(file_path.split('/')[:1], exp_path.split('/')[:1])
 
+
+        # 71 videos from beginning
