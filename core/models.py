@@ -78,4 +78,4 @@ class Dot(models.Model):
         return self.name
 
 
-    ######## 070 video
+    
