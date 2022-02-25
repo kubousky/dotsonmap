@@ -5,7 +5,7 @@ from django.test import TestCase
 from rest_framework import status
 from rest_framework.test import APIClient
 
-from core.models import Tag
+from core.models import Tag, Dot
 
 from dot.serializers import TagSerializer
 
@@ -83,3 +83,49 @@ class PrivateTagsApiTest(TestCase):
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
 
 
+    def test_retrieve_tags_assigned_to_dot(self):
+        """Test filtering tags by those assigned to dots"""
+
+        tag1 = Tag.objects.create(user=self.user, name='Castle')
+        tag2 = Tag.objects.create(user=self.user, name='Beach')
+        dot = Dot.objects.create(
+            name= 'Peña Cortada',
+            lat= '18.35678',
+            lon= '67.76333',
+            rating= '5.0',
+            user=self.user
+        )
+        dot.tags.add(tag1)
+
+        res = self.client.get(TAGS_URL, {'assigned_only':1})
+
+        serializer1 = TagSerializer(tag1)
+        serializer2 = TagSerializer(tag2)
+        self.assertIn(serializer1.data, res.data)
+        self.assertNotIn(serializer2, res.data)
+
+    def test_retrieve_tags_assigned_unique(self): # in a future Dot will have assigned only 1 tag
+        """Test filtering tags by assigned returns unique item"""
+
+        tag = Tag.objects.create(user=self.user, name='Lake')
+        Tag.objects.create(user=self.user, name="Castle")
+        dot1 = Dot.objects.create(
+            name= 'Albufera',
+            lat= '18.35678',
+            lon= '67.76333',
+            rating= '5.0',
+            user=self.user
+        )
+        dot1.tags.add(tag)
+        dot2 = Dot.objects.create(
+            name= 'Xativa Castle',
+            lat= '18.35678',
+            lon= '67.76333',
+            rating= '5.0',
+            user=self.user
+        )
+        dot1.tags.add(tag)
+
+        res = self.client.get(TAGS_URL, {'assigned_only': 1})
+
+        self.assertEqual(len(res.data), 1)
