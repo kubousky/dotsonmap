@@ -21,10 +21,10 @@ COPY . /app
 
 RUN mkdir -p /vol/web/media
 RUN mkdir -p /vol/web/static
-# RUN adduser -D user           # permission problems if create user 
-# RUN chown -R user:user /vol/  # 
-# RUN chmod -R 755 /vol/web
-# USER user
+RUN adduser -D user 
+RUN chown -R user:user /vol/
+RUN chmod -R 755 /vol/web
+USER user
 
 # copy entrypoint.sh
 # COPY entrypoint.sh .

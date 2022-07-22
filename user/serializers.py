@@ -1,5 +1,6 @@
 from django.contrib.auth import get_user_model, authenticate
 from django.utils.translation import ugettext_lazy as _
+from django.contrib.auth.models import User
 
 from rest_framework import serializers
 
@@ -36,6 +37,7 @@ class AuthTokenSerializer(serializers.Serializer):
 
     def validate(self,attrs):
         """Overwriting the validate() fn"""
+        
         email = attrs.get('email')
         password = attrs.get('password')
 
@@ -44,6 +46,7 @@ class AuthTokenSerializer(serializers.Serializer):
             username=email,
             password=password
         )
+
         if not user:
             msg = _('Unable to authenticate with provided credentials')
             raise serializers.ValidationError(msg, code='authentication')

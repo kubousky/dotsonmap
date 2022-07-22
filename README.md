@@ -12,7 +12,10 @@ docker-compose run web python manage.py migrate / test
 docker-compose run web python manage.py startapp <name>
 
 # enter container:
-docker exec -it <container_name> sh
+docker exec -it <container_name> /bin/sh 
+
+# WSL2 -> Docker -> libreries
+cd /usr/local/lib/python3.9/site-packages/rest_framework
 
 # backup
 # command insider postgres container ('t' comes from tar)
@@ -20,6 +23,7 @@ pg_dump -u postgres -W -F t postgres > backup.tar
 
 # test
 docker-compose run --rm  web python manage.py test
+
 
 ### TO-DO List React
 1) Auto login when updated
