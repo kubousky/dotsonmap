@@ -5,15 +5,15 @@ from django.test import TestCase
 from rest_framework import status
 from rest_framework.test import APIClient
 
-from core.models import Tag, Dot
+from core.models import TagPrivate, DotPrivate
 
-from dot.serializers import TagSerializer
+from dot.serializers import TagPrivateSerializer
 
 
 TAGS_URL = reverse('dot:tag-list')
 
 
-class PublicTagsApiTests():
+class PublicTagPrivatesApiTests():
     """Test the publicly available tags API"""
 
     def setUp(self):
@@ -26,7 +26,7 @@ class PublicTagsApiTests():
         self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)
 
 
-class PrivateTagsApiTest(TestCase):
+class PrivateTagPrivatesApiTest(TestCase):
     """TEST the authorized user tags API"""
 
     def setUp(self):
@@ -39,13 +39,13 @@ class PrivateTagsApiTest(TestCase):
 
     def test_retrieve_tags(self):
         """Test retrieving tags"""
-        Tag.objects.create(user=self.user, name='Temple')
-        Tag.objects.create(user=self.user, name='Mountain')
+        TagPrivate.objects.create(user=self.user, name='Temple')
+        TagPrivate.objects.create(user=self.user, name='Mountain')
 
         res = self.client.get(TAGS_URL)
 
-        tags = Tag.objects.all().order_by('-name')
-        serializer = TagSerializer(tags, many=True)
+        tags = TagPrivate.objects.all().order_by('-name')
+        serializer = TagPrivateSerializer(tags, many=True)
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(res.data, serializer.data)
 
@@ -55,8 +55,8 @@ class PrivateTagsApiTest(TestCase):
             'other@kubousky.com',
             'testpass'
         )
-        Tag.objects.create(user=user2, name='Waterfall')
-        tag = Tag.objects.create(user=self.user, name='River')
+        TagPrivate.objects.create(user=user2, name='Waterfall')
+        tag = TagPrivate.objects.create(user=self.user, name='River')
 
         res = self.client.get(TAGS_URL)
 
@@ -69,7 +69,7 @@ class PrivateTagsApiTest(TestCase):
         payload = {'name' : 'Test tag'}
         self.client.post(TAGS_URL, payload)
 
-        exists = Tag.objects.filter(
+        exists = TagPrivate.objects.filter(
             user=self.user,
             name=payload['name']
         ).exists()
@@ -86,9 +86,9 @@ class PrivateTagsApiTest(TestCase):
     def test_retrieve_tags_assigned_to_dot(self):
         """Test filtering tags by those assigned to dots"""
 
-        tag1 = Tag.objects.create(user=self.user, name='Castle')
-        tag2 = Tag.objects.create(user=self.user, name='Beach')
-        dot = Dot.objects.create(
+        tag1 = TagPrivate.objects.create(user=self.user, name='Castle')
+        tag2 = TagPrivate.objects.create(user=self.user, name='Beach')
+        dot = DotPrivate.objects.create(
             name= 'Peña Cortada',
             lat= '18.35678',
             lon= '67.76333',
@@ -99,17 +99,17 @@ class PrivateTagsApiTest(TestCase):
 
         res = self.client.get(TAGS_URL, {'assigned_only':1})
 
-        serializer1 = TagSerializer(tag1)
-        serializer2 = TagSerializer(tag2)
+        serializer1 = TagPrivateSerializer(tag1)
+        serializer2 = TagPrivateSerializer(tag2)
         self.assertIn(serializer1.data, res.data)
         self.assertNotIn(serializer2, res.data)
 
-    def test_retrieve_tags_assigned_unique(self): # in a future Dot will have assigned only 1 tag
+    def test_retrieve_tags_assigned_unique(self): # in a future DotPrivate will have assigned only 1 tag
         """Test filtering tags by assigned returns unique item"""
 
-        tag = Tag.objects.create(user=self.user, name='Lake')
-        Tag.objects.create(user=self.user, name="Castle")
-        dot1 = Dot.objects.create(
+        tag = TagPrivate.objects.create(user=self.user, name='Lake')
+        TagPrivate.objects.create(user=self.user, name="Castle")
+        dot1 = DotPrivate.objects.create(
             name= 'Albufera',
             lat= '18.35678',
             lon= '67.76333',
@@ -117,7 +117,7 @@ class PrivateTagsApiTest(TestCase):
             user=self.user
         )
         dot1.tags.add(tag)
-        dot2 = Dot.objects.create(
+        dot2 = DotPrivate.objects.create(
             name= 'Xativa Castle',
             lat= '18.35678',
             lon= '67.76333',

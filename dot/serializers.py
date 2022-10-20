@@ -1,38 +1,43 @@
 from django.test import tag
 from rest_framework import serializers
 
-from core.models import Tag, Dot
+from core.models import TagPrivate, DotPrivate
 
 
-class TagSerializer(serializers.ModelSerializer):
+class TagPrivateSerializer(serializers.ModelSerializer):
     """Serializer for tag objects"""
 
     class Meta:
-        model = Tag
+        model = TagPrivate
         fields = ('id', 'name')
         read_only_fields = ('id',)
 
 
-class DotSerializer(serializers.ModelSerializer):
+class DotPrivateSerializer(serializers.ModelSerializer):
     """Serializer for dot objects"""
-    tags = serializers.PrimaryKeyRelatedField(
-        many=True,
-        queryset=Tag.objects.all()
-    )
+
+    tag = serializers.PrimaryKeyRelatedField(
+        queryset=TagPrivate.objects.all() # if .filter(user=request.user.id) -> request is not defined error
+        )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        request = self.context.get('request', None)
+        self.fields['tag'].queryset=TagPrivate.objects.filter(user=request.user.id)
     
     class Meta:
-        model = Dot
-        fields = ('id', 'name', 'description', 'lat', 'lon', 'rating', 'link', 'tags')
+        model = DotPrivate
+        fields = ('id', 'name', 'description', 'lat', 'lon', 'rating', 'link', 'tag')
         read_only_fields = ('id',)
 
-class DotDetailSerializer(DotSerializer):
+class DotPrivateDetailSerializer(DotPrivateSerializer):
     """Serialize a dot detail"""
-    tags = TagSerializer(many=True, read_only=True) 
+    tag = TagPrivateSerializer(read_only=True)
 
-class DotImageSerializer(serializers.ModelSerializer):
+class DotPrivateImageSerializer(serializers.ModelSerializer):
     """Serializer for uploading images to dots"""
 
     class Meta:
-        model = Dot
+        model = DotPrivate
         fields = ('id', 'image')
         read_only_fields = ('id',)

@@ -10,9 +10,9 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APIClient
 
-from core.models import Dot, Tag
+from core.models import DotPrivate, TagPrivate
 
-from dot.serializers import DotSerializer, DotDetailSerializer
+from dot.serializers import DotPrivateSerializer, DotPrivateDetailSerializer
 
 
 DOT_URL = reverse('dot:dot-list')
@@ -29,7 +29,7 @@ def detail_url(dot_id):
 
 def sample_tag(user, name='Waterfall'):
     """Create and return a sample tag"""
-    return Tag.objects.create(user=user, name=name)
+    return TagPrivate.objects.create(user=user, name=name)
 
 
 def sample_dot(user, **params):
@@ -42,9 +42,9 @@ def sample_dot(user, **params):
     }
     defaults.update(params)
 
-    return Dot.objects.create(user=user, **defaults)
+    return DotPrivate.objects.create(user=user, **defaults)
 
-class PublicDotApiTests(TestCase):
+class PublicDotPrivateApiTests(TestCase):
     """Test unauthenticated dot API access"""
 
     def setUp(self):
@@ -56,7 +56,7 @@ class PublicDotApiTests(TestCase):
 
         self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)
 
-class PrivateDotApiTests(TestCase):
+class PrivateDotPrivateApiTests(TestCase):
     """Test unauthenticated dot API access"""
 
     def setUp(self):
@@ -75,8 +75,8 @@ class PrivateDotApiTests(TestCase):
 
         res = self.client.get(DOT_URL)
 
-        dots = Dot.objects.all().order_by('id')
-        serializer = DotSerializer(dots, many=True)
+        dots = DotPrivate.objects.all().order_by('id')
+        serializer = DotPrivateSerializer(dots, many=True)
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(res.data, serializer.data)
@@ -92,8 +92,8 @@ class PrivateDotApiTests(TestCase):
 
         res = self.client.get(DOT_URL)
 
-        dots = Dot.objects.filter(user=self.user)
-        serializer = DotSerializer(dots, many=True)
+        dots = DotPrivate.objects.filter(user=self.user)
+        serializer = DotPrivateSerializer(dots, many=True)
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(len(res.data), 1)
@@ -107,7 +107,7 @@ class PrivateDotApiTests(TestCase):
         url = detail_url(dot.id)
         res = self.client.get(url)
 
-        serializer = DotDetailSerializer(dot)
+        serializer = DotPrivateDetailSerializer(dot)
         self.assertEqual(res.data, serializer.data)
 
     def test_create_basic_dot(self):
@@ -121,7 +121,7 @@ class PrivateDotApiTests(TestCase):
         res = self.client.post(DOT_URL, payload)
 
         self.assertEqual(res.status_code, status.HTTP_201_CREATED)
-        dot = Dot.objects.get(id=res.data['id'])
+        dot = DotPrivate.objects.get(id=res.data['id'])
         for key in payload.keys():
             self.assertEqual(payload[key], getattr(dot, key))
 
@@ -139,13 +139,13 @@ class PrivateDotApiTests(TestCase):
         res = self.client.post(DOT_URL, payload)
 
         self.assertEqual(res.status_code, status.HTTP_201_CREATED)
-        dot = Dot.objects.get(id=res.data['id'])
+        dot = DotPrivate.objects.get(id=res.data['id'])
         tags = dot.tags.all()
         self.assertEqual(tags.count(),2)
         self.assertIn(tag1, tags)
         self.assertIn(tag2, tags) 
 
-class DotImageUploadTests(TestCase):
+class DotPrivateImageUploadTests(TestCase):
     
     def setUp(self):
         self.client = APIClient()
@@ -195,9 +195,9 @@ class DotImageUploadTests(TestCase):
             {'tags': f'{tag1.id},{tag2.id}'}
         )
 
-        serializer1 = DotSerializer(dot1)
-        serializer2 = DotSerializer(dot2)
-        serializer3 = DotSerializer(dot3)
+        serializer1 = DotPrivateSerializer(dot1)
+        serializer2 = DotPrivateSerializer(dot2)
+        serializer3 = DotPrivateSerializer(dot3)
         self.assertIn(serializer1.data, res.data)
         self.assertIn(serializer2.data, res.data)
         self.assertNotIn(serializer3.data, res.data)

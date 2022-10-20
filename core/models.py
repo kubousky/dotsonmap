@@ -47,35 +47,69 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     USERNAME_FIELD = 'email'
 
-class Tag(models.Model):
-    """Tag to be used for a position/dot"""
+
+class TagPrivate(models.Model):
+    """TagPrivate to be used for a position/dot"""
     name = models.CharField(max_length=255)
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
+        related_name='tags_private',                      #    ->   current_user.tags_private.all()
         on_delete=models.CASCADE,
-    ) # Do not delet Dots if the user is deleted
+    )
+    public = False
 
     def __str__(self):
         return self.name
 
-class Dot(models.Model):
-    """Dot object"""
+class DotPrivate(models.Model):
+    """DotPrivate object"""
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE       
-    ) # Do not delet Dots if the user is deleted
+    )
     name = models.CharField(max_length=255)
+    public = False
     description = models.TextField(max_length=350, blank=True)
     lon = models.CharField(max_length=20)
     lat = models.CharField(max_length=20)
     rating = models.FloatField(validators=[MinValueValidator(0.0), MaxValueValidator(5.0)])
     link = models.CharField(max_length=255, blank=True)
-    # !!! importante cambiar: max 1 Tag por Dot and do it required
-    tags = models.ManyToManyField('Tag')
+    tag = models.ForeignKey('TagPrivate', on_delete=models.PROTECT)
     image = models.ImageField(null=True, upload_to=dot_image_file_path)
 
-    def __str__(self): # !!! lo vamos a cambiar por un imagen de su Tag, cada 'dot' ser un circulo con rio o montaña etc # puede ser?
+    def __str__(self): # !!! lo vamos a cambiar por un imagen de su TagPrivate, cada 'dot' ser un circulo con rio o montaña etc # puede ser?
         return self.name
 
 
-    
+# class TagPublic(models.Model):
+#     """TagPublic to be used for a position/dot"""
+#     name = models.CharField(max_length=255)
+#     user = models.ForeignKey(
+#         settings.AUTH_USER_MODEL,
+#         on_delete=models.PROTECT,
+#     )
+#     public = True
+
+#     def __str__(self):
+#         return self.name
+
+# class DotPublic(models.Model):
+#     """DotPrivate object"""
+#     user = models.ForeignKey(
+#         settings.AUTH_USER_MODEL,
+#         on_delete=models.PROTECT       
+#     )
+#     name = models.CharField(max_length=255)
+#     public = True
+#     description = models.TextField(max_length=350, blank=True)
+#     lon = models.CharField(max_length=20)
+#     lat = models.CharField(max_length=20)
+#     rating = models.FloatField(validators=[MinValueValidator(0.0), MaxValueValidator(5.0)])
+#     link = models.CharField(max_length=255, blank=True)
+#     # !!! importante cambiar: max 1 TagPrivate por DotPrivate and do it required
+#     tags = models.ManyToManyField('TagPublic')
+#     # tag = models.ForeignKey(TagPrivate, on_delete=models.PROTECT)
+#     image = models.ImageField(null=True, upload_to=dot_image_file_path)
+
+#     def __str__(self): # !!! lo vamos a cambiar por un imagen de su TagPrivate, cada 'dot' ser un circulo con rio o montaña etc # puede ser?
+#         return self.name
