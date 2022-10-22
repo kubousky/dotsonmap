@@ -44,16 +44,16 @@ class ModelTests(TestCase):
 
     def test_tag_str(self):
         """Test the tag string representation"""
-        tag = models.Tag.objects.create(
+        tag = models.TagPrivate.objects.create(
             user=sample_user(),
             name='Temple'
         )
 
         self.assertEqual(str(tag), tag.name)
 
-    def test_dot_str(self): # !!! lo vamos a cambiar por un imagen de su Tag, cada 'dot' ser un circulo con rio o montaña etc
+    def test_dot_str(self): # !!! lo vamos a cambiar por un imagen de su TagPrivate, cada 'dot' ser un circulo con rio o montaña etc
         """test the recipe string representation"""
-        dot = models.Dot.objects.create(
+        dot = models.DotPrivate.objects.create(
             user=sample_user(),
             name='Bromo',
             description='Es un Volcan en Indonesia',

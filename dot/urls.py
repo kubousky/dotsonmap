@@ -5,8 +5,8 @@ from dot import views
 
 
 router = DefaultRouter()
-router.register('tags', views.TagViewSet)
-router.register('dots', views.DotViewSet)
+router.register('tags', views.TagPrivateViewSet)
+router.register('dots', views.DotPrivateViewSet)
 
 app_name = 'dot'
 
